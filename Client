@@ -1,0 +1,22 @@
+import socket
+print("Loading request... ")
+my_socket = socket.socket()
+my_socket.connect(('127.0.0.1', 80))
+message = ""
+while message != "EXIT":
+    message = input("Send a message to the server: ")
+    print("Client: " + message)
+    length = str(len(message)).zfill(8)
+    message = length + message
+
+    my_socket.send(message.encode())
+
+    msglength = my_socket.recv(8).decode()
+
+    if not ('00000000' <= length[0:7] <= '99999999'):
+        my_socket.close()
+
+    message = my_socket.recv(int(msglength)).decode()
+
+    print("Server: " + message)
+my_socket.close()
